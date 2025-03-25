@@ -1,126 +1,17 @@
+
+
 {% extends 'base.html' %}
 
-{% block title %}Profile - BBI Safe Driver{% endblock %}
-
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card shadow">
-            <div class="card-header bg-info text-white">
-                <h3 class="mb-0">
-                    <i class="bi bi-person-circle me-2"></i>Your Profile
-                </h3>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Username</label>
-                            <input type="text" class="form-control" value="{{ user.username }}" readonly>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control" value="{{ user.email }}" readonly>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="first_name" class="form-label">First Name</label>
-                            <input type="text" class="form-control" id="first_name" name="first_name" 
-                                   value="{{ user.first_name }}" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="last_name" class="form-label">Last Name</label>
-                            <input type="text" class="form-control" id="last_name" name="last_name" 
-                                   value="{{ user.last_name }}" required>
-                        </div>
-                    </div>
-
-                    <hr class="my-4">
-
-                    <h4 class="mb-3"><i class="bi bi-shield-check me-2"></i>Policy Information</h4>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="policy_number" class="form-label">Policy Number</label>
-                            <input type="text" class="form-control" id="policy_number" name="policy_number" 
-                                   value="{{ profile.policy_number }}" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="phone_number" class="form-label">Phone Number</label>
-                            <input type="tel" class="form-control" id="phone_number" name="phone_number" 
-                                   value="{{ profile.phone_number }}" required>
-                        </div>
-                        <div class="col-md-12">
-                            <label for="device_id" class="form-label">Telematics Device ID</label>
-                            <input type="text" class="form-control" id="device_id" name="device_id" 
-                                   value="{{ profile.device_id|default:'' }}">
-                            <div class="form-text">
-                                {% if profile.is_device_linked %}
-                                    <span class="text-success">
-                                        <i class="bi bi-check-circle-fill"></i> Device is linked
-                                    </span>
-                                {% else %}
-                                    <span class="text-danger">
-                                        <i class="bi bi-exclamation-circle-fill"></i> No device linked
-                                    </span>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr class="my-4">
-
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save me-1"></i>Save Changes
-                        </button>
-                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary ms-md-2">
-                            <i class="bi bi-x-circle me-1"></i>Cancel
-                        </a>
-                    </div>
-                </form>
-            </div>
-            <div class="card-footer">
-                <div class="d-flex justify-content-between">
-                    <small class="text-muted">
-                        Member since {{ profile.join_date|date:"M d, Y" }}
-                    </small>
-                    <small>
-                        <a href="#" class="text-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
-                            <i class="bi bi-trash me-1"></i>Delete Account
-                        </a>
-                    </small>
-                </div>
-            </div>
+<div class="container">
+    {% if profile %}
+        <!-- Your existing profile display -->
+        <h2>{{ profile.user.get_full_name }}'s Profile</h2>
+        <p>Policy: {{ profile.policy_number }}</p>
+    {% else %}
+        <div class="alert alert-warning">
+            Profile not found. Please contact support.
         </div>
-    </div>
-</div>
-
-<!-- Delete Account Modal -->
-<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Account Deletion
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete your account? This action cannot be undone.</p>
-                <p class="fw-bold">All your trip data and discount history will be permanently lost.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-1"></i>Cancel
-                </button>
-                <form method="post" action="{% url 'delete_account' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash me-1"></i>Delete Account
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
+    {% endif %}
 </div>
 {% endblock %}

@@ -38,8 +38,33 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bbi_app',
+    'bbi_api',
+    'channels', # Added 'channels' to INSTALLED_APPS
+    'rest_framework', # Added 'rest_framework' to INSTALLED_APPS
+    'rest_framework.authtoken', # Added 'rest_framework.authtoken' to INSTALLED_APPS
 
 ]
+# Added 'rest_framework' to INSTALLED_APPS
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
+
+ASGI_APPLICATION = 'bbi_project.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

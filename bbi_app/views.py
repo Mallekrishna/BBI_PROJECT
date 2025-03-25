@@ -144,7 +144,7 @@ def trip_details(request, trip_id):
     except DrivingTrip.DoesNotExist:
         messages.error(request, 'Trip not found')
         return redirect('dashboard')
-
+'''
 @login_required
 def profile(request):
     profile = request.user.driverprofile
@@ -158,3 +158,36 @@ def profile(request):
         form = DriverProfileForm(instance=profile)
     
     return render(request, 'profile.html', {'form': form, 'profile': profile})
+'''
+@login_required
+def profile(request):
+    try:
+        profile = request.user.driverprofile
+        # Your existing profile view logic here
+        return render(request, 'profile.html', {'profile': profile})
+    except Exception as e:  # Catch specific exception: DriverProfile.DoesNotExist
+        messages.warning(request, "Please complete your driver profile first")
+        return redirect('complete_profile')
+    
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import DriverProfileForm  # You'll need to create this
+from .models import DriverProfile
+
+@login_required
+def complete_profile(request):
+    # Check if profile already exists
+    if hasattr(request.user, 'driverprofile'):
+        return redirect('dashboard')
+    
+    if request.method == 'POST':
+        form = DriverProfileForm(request.POST)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+            return redirect('dashboard')
+    else:
+        form = DriverProfileForm()
+    
+    return render(request, 'complete_profile.html', {'form': form})

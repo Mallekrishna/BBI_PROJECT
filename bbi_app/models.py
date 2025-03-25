@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db import models  # ✅ Correct
+
 
 class DriverProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -83,3 +85,26 @@ class DiscountHistory(models.Model):
     
     def __str__(self):
         return f"Discount update for {self.driver} on {self.date}"
+    
+
+
+def update_safety_score(self):
+    """Calculate dynamic safety score based on recent trips"""
+    recent_trips = self.trips.order_by('-end_time')[:30]
+    if not recent_trips:
+        return 0
+    
+    # Calculate weighted scores
+    speed_scores = [t.speed_score * 0.4 for t in recent_trips]
+    brake_scores = [t.braking_score * 0.3 for t in recent_trips]
+    accel_scores = [t.acceleration_score * 0.3 for t in recent_trips]
+    
+    avg_score = (
+        sum(speed_scores) / len(speed_scores) +
+        sum(brake_scores) / len(brake_scores) +
+        sum(accel_scores) / len(accel_scores)
+    )
+    
+    # Apply alert penalties
+    alert_penalty = min(10, self.alerts.filter(is_read=False).count() * 0.5)
+    return max(0, avg_score - alert_penalty)
