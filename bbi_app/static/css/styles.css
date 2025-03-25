@@ -1,0 +1,77 @@
+/* Progress circles for trip details */
+.progress-circle {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 1rem;
+}
+
+.progress-circle-lg {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 1rem;
+}
+
+.progress-circle-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.progress-circle-svg-lg {
+    width: 100%;
+    height: 100%;
+}
+
+.progress-circle-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.progress-circle-value-lg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.progress-circle-fill {
+    transition: stroke-dasharray 1s ease-in-out;
+}
+
+/* Form styling */
+.form-label {
+    font-weight: 500;
+}
+
+/* Card shadows */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .metric-value {
+        font-size: 1.5rem;
+    }
+    
+    .progress-circle {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .progress-circle-value {
+        font-size: 1.2rem;
+    }
+}

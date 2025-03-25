@@ -1,0 +1,142 @@
+
+
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Your Driving Dashboard</h2>
+        
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h4>Your Current Discount</h4>
+            </div>
+            <div class="card-body">
+                <div class="progress mb-3" style="height: 30px;">
+                    <div class="progress-bar bg-success" role="progressbar" 
+                         style="width: {{ profile.total_discount|multiply:100 }}%;" 
+                         aria-valuenow="{{ profile.total_discount|multiply:100 }}" 
+                         aria-valuemin="0" 
+                         aria-valuemax="30">
+                        {{ profile.total_discount|multiply:100 }}%
+                    </div>
+                </div>
+                <p>Participation Discount: {{ profile.participation_discount|multiply:100 }}%</p>
+                <p>Driving Behavior Discount: {{ profile.driving_discount|multiply:100 }}%</p>
+                <p>Total Discount: {{ profile.total_discount|multiply:100 }}% (Max 30%)</p>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4>Recent Trips</h4>
+            </div>
+            <div class="card-body">
+                {% if trips %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Distance (mi)</th>
+                                    <th>Score</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for trip in trips %}
+                                    <tr>
+                                        <td>{{ trip.end_time|date:"M d, Y" }}</td>
+                                        <td>{{ trip.distance_miles|floatformat:1 }}</td>
+                                        <td>
+                                            <div class="progress" style="height: 20px;">
+                                                <div class="progress-bar 
+                                                    {% if trip.overall_score >= 80 %}bg-success
+                                                    {% elif trip.overall_score >= 60 %}bg-warning
+                                                    {% else %}bg-danger{% endif %}" 
+                                                    role="progressbar" 
+                                                    style="width: {{ trip.overall_score }}%;" 
+                                                    aria-valuenow="{{ trip.overall_score }}" 
+                                                    aria-valuemin="0" 
+                                                    aria-valuemax="100">
+                                                    {{ trip.overall_score|floatformat:0 }}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'trip_details' trip.id %}" class="btn btn-sm btn-info">Details</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <a href="#" class="btn btn-outline-primary">View All Trips</a>
+                {% else %}
+                    <p>No trips recorded yet. Upload your first trip data to get started!</p>
+                    <a href="{% url 'upload_trip' %}" class="btn btn-primary">Upload Trip Data</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h4>Driving Statistics</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <h5>Total Trips</h5>
+                    <p class="display-6">{{ total_trips }}</p>
+                </div>
+                <div class="mb-3">
+                    <h5>Average Score</h5>
+                    <div class="progress" style="height: 30px;">
+                        <div class="progress-bar 
+                            {% if avg_score >= 80 %}bg-success
+                            {% elif avg_score >= 60 %}bg-warning
+                            {% else %}bg-danger{% endif %}" 
+                            role="progressbar" 
+                            style="width: {{ avg_score }}%;" 
+                            aria-valuenow="{{ avg_score }}" 
+                            aria-valuemin="0" 
+                            aria-valuemax="100">
+                            {{ avg_score|floatformat:0 }}
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <h5>Discount History</h5>
+                    <ul class="list-group">
+                        {% for history in discount_history %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ history.date|date:"M d" }}
+                                <span class="badge bg-success rounded-pill">
+                                    {{ history.total_discount|multiply:100 }}%
+                                </span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h4>Tips to Improve</h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Avoid hard braking</li>
+                    <li class="list-group-item">Maintain consistent speed</li>
+                    <li class="list-group-item">Limit night driving</li>
+                    <li class="list-group-item">Avoid rapid acceleration</li>
+                    <li class="list-group-item">Stay below speed limits</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<p>Result: {{ 5|multiply:2 }}</p>  {# Example usage #}
+{% endblock %}
